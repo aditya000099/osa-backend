@@ -20,6 +20,24 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3001;
 
+// Add headers middleware before CORS
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", [
+    "https://osa-frontend-iota.vercel.app",
+    "https://osa-web.vercel.app",
+  ]);
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  res.header("Access-Control-Allow-Credentials", true);
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+  next();
+});
+
 app.use(
   cors({
     origin: [
@@ -27,7 +45,13 @@ app.use(
       "https://osa-web.vercel.app",
     ],
     methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: [
+      "Origin",
+      "X-Requested-With",
+      "Content-Type",
+      "Accept",
+      "Authorization",
+    ],
     credentials: true,
     optionsSuccessStatus: 200,
   })
@@ -45,5 +69,14 @@ app.listen(port, () => {
 
   initializeAgent().catch((err) => {
     console.error("Initial agent load failed on startup:", err);
+  });
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    message: "Something went wrong!",
+    error: process.env.NODE_ENV === "development" ? err.message : undefined,
   });
 });
