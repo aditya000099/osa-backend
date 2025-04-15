@@ -20,42 +20,17 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Add headers middleware before CORS
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", [
-    "https://osa-frontend-iota.vercel.app",
-    "https://osa-web.vercel.app",
-  ]);
-  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  res.header("Access-Control-Allow-Credentials", true);
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
-  next();
-});
-
+// Single CORS configuration
 app.use(
   cors({
-    origin: [
-      "https://osa-frontend-iota.vercel.app",
-      "https://osa-web.vercel.app",
-    ],
+    origin: "*", // For testing. In production, specify exact origins
     methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: [
-      "Origin",
-      "X-Requested-With",
-      "Content-Type",
-      "Accept",
-      "Authorization",
-    ],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
-    optionsSuccessStatus: 200,
+    optionsSuccessStatus: 204,
   })
 );
+
 app.use(express.json());
 
 app.get("/", (req, res) => {
