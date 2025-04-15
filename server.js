@@ -23,11 +23,24 @@ const port = process.env.PORT || 3001;
 // Single CORS configuration
 app.use(
   cors({
-    origin: "*", // For testing. In production, specify exact origins
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: [
+      "https://osa-frontend-iota.vercel.app",
+      "https://osa-web.vercel.app",
+      "*",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Accept",
+      "Origin",
+    ],
+    exposedHeaders: ["Content-Range", "X-Content-Range"],
     credentials: true,
-    optionsSuccessStatus: 204,
+    optionsSuccessStatus: 200,
+    preflightContinue: false,
+    maxAge: 86400, // 24 hours
   })
 );
 
