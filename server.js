@@ -37,7 +37,7 @@ app.use(
       "Origin",
     ],
     exposedHeaders: ["Content-Range", "X-Content-Range"],
-    credentials: true,
+    // credentials: true,
     optionsSuccessStatus: 200,
     preflightContinue: false,
     maxAge: 86400, // 24 hours
