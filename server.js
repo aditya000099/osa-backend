@@ -1,6 +1,6 @@
 process.on("unhandledRejection", (reason, promise) => {
   console.error("!!!! SERVER ERROR: UNHANDLED PROMISE REJECTION !!!!");
-  console.error("Reason:", reason); // Log the reason (often the error object)
+  console.error("Reason:", reason);
 });
 
 process.on("uncaughtException", (error, origin) => {
@@ -11,7 +11,7 @@ process.on("uncaughtException", (error, origin) => {
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import chatRoutes from "./routes/chat.routes.js"; // Use .js extension
+import chatRoutes from "./routes/chat.routes.js";
 
 import { initializeAgent } from "./services/agent.service.js";
 
@@ -22,9 +22,14 @@ const port = process.env.PORT || 3001;
 
 app.use(
   cors({
-    origin: "https://osa-frontend-iota.vercel.app",
-    methods: ["GET", "POST"],
+    origin: [
+      "https://osa-frontend-iota.vercel.app",
+      "https://osa-web.vercel.app",
+    ],
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
+    optionsSuccessStatus: 200,
   })
 );
 app.use(express.json());
