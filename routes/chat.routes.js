@@ -4,17 +4,29 @@ import { runAgent } from "../services/agent.service.js";
 
 const router = express.Router();
 
+// Add OPTIONS handling for preflight requests
+router.options("/", (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Max-Age", "86400");
+  res.sendStatus(200);
+});
+
 router.post("/", async (req, res) => {
+  // Add CORS headers for the actual request
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "POST");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
   try {
     // --> Make sure 'chatId' comes from the request body <--
     const { message, chatId } = req.body;
 
     if (!message || typeof message !== "string") {
-      return res
-        .status(400)
-        .json({
-          error: 'Bad Request: "message" is required and must be a string.',
-        });
+      return res.status(400).json({
+        error: 'Bad Request: "message" is required and must be a string.',
+      });
     }
     // Add validation for chatId if required (e.g., must be string)
     if (chatId && typeof chatId !== "string") {
